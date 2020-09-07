@@ -6,8 +6,7 @@ using System.Linq;
 using Moq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using BloggerAPI.Repositories;
 
 namespace BloggerAPITestProject
 {
@@ -30,47 +29,87 @@ namespace BloggerAPITestProject
             mockSet.As<IQueryable<Users>>().Setup(m => m.ElementType).Returns(Usersdata.ElementType);
             mockSet.As<IQueryable<Users>>().Setup(m => m.GetEnumerator()).Returns(Usersdata.GetEnumerator());
             var mockContext = new Mock<BloggerContext>();
-            Users user = new Users { Username = "sujoy123", Firstname = "Sujoy", Lastname = "Basak" };
             mockContext.Setup(c => c.Users).Returns(mockSet.Object);
             db = mockContext.Object;
         }
 
-        [Test]
-        public void PostUserPositive()
-        {
-            UsersController controller = new UsersController(db);
-            Users user = new Users { Username = "sujoy123", Firstname = "Sujoy", Lastname = "Basak" };
-            var data = controller.Post(user);
-            var result = data as ObjectResult;
-            Assert.AreEqual(200, result.StatusCode);
-        }
-
-        [Test]
-        public void PostUserNegative()
-        {
-            UsersController controller = new UsersController(db);
-            Users user = new Users { Username = "sujoy123", Firstname = "Sujoy", Lastname = "Basak" };
-            var data = controller.Post(user);
-            var result = data as ObjectResult;
-            Assert.AreEqual(400, result.StatusCode);
-        }
 
         [Test]
         public void GetUsers()
         {
-            UsersController controller = new UsersController(db);
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
             var data = controller.Get();
             var result = data as ObjectResult;
             Assert.AreEqual(200, result.StatusCode);
         }
 
         [Test]
-        public void GetByUsername()
+        public void GetByUsernamePositive()
         {
-            UsersController controller = new UsersController(db);
-            var data = controller.Get("sujoy123");
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            var data = controller.Get("prithwi97");
             var result = data as ObjectResult;
             Assert.AreEqual(200, result.StatusCode);
+        }
+
+        [Test]
+        public void GetByUsernameNegative()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            var data = controller.Get("sujoy123");
+            var result = data as ObjectResult;
+            Assert.AreEqual(400, result.StatusCode);
+        }
+
+        [Test]
+        public void PostUser()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            Users user = new Users { Username = "sujoy123", Firstname = "Sujoy", Lastname = "Basak" };
+            var data = controller.Post(user);
+            Assert.AreEqual("User Added Successfully", data);
+        }
+
+        [Test]
+        public void PutUserPositive()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            Users user = new Users { Firstname = "Prithwi", Lastname = "Mazumdar"};
+            var data = controller.Put("prithwi97",user);
+            Assert.AreEqual("User updated", data);
+        }
+
+        [Test]
+        public void PutUserNegative()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            Users user = new Users { Firstname = "Sujoy", Lastname = "Basak" };
+            var data = controller.Put("sujoy123", user);
+            Assert.AreEqual("User could not be updated", data);
+        }
+
+        [Test]
+        public void DeleteUserPositive()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            var data = controller.Delete("subham1234");
+            Assert.AreEqual("User deleted successfully", data);
+        }
+
+        [Test]
+        public void DeleteUserNegative()
+        {
+            var repo = new Mock<UsersRepository>(db);
+            UsersController controller = new UsersController(repo.Object);
+            var data = controller.Delete("sujoy123");
+            Assert.AreEqual("User could not be deleted", data);
         }
     }
 }

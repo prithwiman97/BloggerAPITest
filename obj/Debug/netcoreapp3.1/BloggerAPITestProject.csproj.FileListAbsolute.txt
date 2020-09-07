@@ -146,3 +146,4 @@ D:\ASP .net projects\BloggerAPITestProject\bin\Debug\netcoreapp3.1\Moq.dll
 D:\ASP .net projects\BloggerAPITestProject\obj\Debug\netcoreapp3.1\BloggerAPITestProject.csproj.CoreCompileInputs.cache
 D:\ASP .net projects\BloggerAPITestProject\obj\Debug\netcoreapp3.1\BloggerAPITestProject.dll
 D:\ASP .net projects\BloggerAPITestProject\obj\Debug\netcoreapp3.1\BloggerAPITestProject.pdb
+D:\ASP .net projects\BloggerAPITestProject\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Log4Net.AspNetCore.dll
